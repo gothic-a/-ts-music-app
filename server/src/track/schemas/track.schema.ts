@@ -13,13 +13,13 @@ export class Track {
     artist: string
 
     @Prop()
-    track: string
+    text: string
 
-    @Prop()
+    @Prop({ default: 0 })
     listens: number
 
     @Prop()
-    picture: string
+    image: string
 
     @Prop()
     audio: string
