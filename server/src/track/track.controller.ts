@@ -34,22 +34,22 @@ export class TrackController {
     }
 
     @Get('/:id')
-    getOne(@Param('id') id: ObjectId): Promise<Track> {
+    getOne(@Param('id') id: string): Promise<Track | never> {
         return this.trackService.getOne(id)
     }
 
     @Delete('/:id')
-    delete(@Param('id') id: ObjectId): Promise<Track> {
+    delete(@Param('id') id: string): Promise<Track | never> {
         return this.trackService.delete(id) 
     }
 
     @Put('/listen/:id')
-    addListen(@Param('id') id: ObjectId): void {
+    addListen(@Param('id') id: string): (void | never) {
         this.trackService.addListen(id)
     }
 
     @Post('/comment/create')
-    addComment(@Body() dto: AddCommentDto): Promise<Comment> {
+    addComment(@Body() dto: AddCommentDto): Promise<Comment | never> {
         return this.trackService.addComment(dto)
     }
 

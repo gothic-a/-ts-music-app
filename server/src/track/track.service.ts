@@ -1,14 +1,17 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Comment, CommentDocument } from "./schemas/comment.schema";
 import { Track, TrackDocument } from "./schemas/track.schema";
-import { Model, ObjectId } from "mongoose";
+import mongoose, { Model, ObjectId } from "mongoose";
+import type { ObjectIdLike, ObjectId as ObjectIdB } from 'bson'
 
 import { CreateTrackDto, CreateTrackFilesDto } from "./dto/create-track.dto";
 import { AddCommentDto } from "./dto/add-comment.dto";
 import { FileService } from "src/file/file.service";
 
 import { FileType } from "src/file/file.service";
+
+type ObjectIdIsValidParam = string | number | ObjectIdB | ObjectIdLike | Buffer | Uint8Array
 
 @Injectable()
 export class TrackService {
@@ -41,18 +44,26 @@ export class TrackService {
         return tracks
     }
 
-    async getOne(id: ObjectId): Promise<Track> {
+    async getOne(id: string): Promise<Track | never> {
+        if(!mongoose.Types.ObjectId.isValid(id as ObjectIdIsValidParam)) throw new HttpException('invalid id', HttpStatus.BAD_REQUEST)
+        
         const track = await this.trackModel.findById(id).populate('comments', ['text', 'username'])
         return track
     }
 
-    async delete(id: ObjectId): Promise<Track> {
+    async delete(id: string): Promise<Track | never> {
+        if(!mongoose.Types.ObjectId.isValid(id as ObjectIdIsValidParam)) throw new HttpException('invalid id', HttpStatus.BAD_REQUEST)
+
         const track = await this.trackModel.findByIdAndDelete(id)
         return track
     }
 
-    async addComment(dto: AddCommentDto): Promise<Comment> {
-        const track = await this.trackModel.findById(dto.track)
+    async addComment(dto: AddCommentDto): Promise<Comment | never> { 
+        const id = dto.track
+
+        if(!mongoose.Types.ObjectId.isValid(id as ObjectIdIsValidParam)) throw new HttpException('invalid id', HttpStatus.BAD_REQUEST)
+
+        const track = await this.trackModel.findById(id)
         const comment = await this.commentModel.create(dto)
         
         track.comments.push(comment._id)
@@ -61,7 +72,9 @@ export class TrackService {
         return comment
     }
 
-    async addListen(id: ObjectId): Promise<void> {
+    async addListen(id: string): Promise<void | never> {
+        if(!mongoose.Types.ObjectId.isValid(id as ObjectIdIsValidParam)) throw new HttpException('invalid id', HttpStatus.BAD_REQUEST)
+
         const track = await this.trackModel.findById(id)
         ++track.listens
 
