@@ -50,7 +50,7 @@ export class TrackController {
 
     @Post('/comment/create')
     addComment(@Body() dto: AddCommentDto): Promise<Comment | never> {
-        return this.trackService.addComment(dto)
+        return this.trackService.addComment(dto.track, dto)
     }
 
 }
