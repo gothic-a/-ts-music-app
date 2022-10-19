@@ -1,16 +1,18 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { Layout, Menu } from 'antd'
 import type { MenuProps } from 'antd'
-import Link from 'next/link'
 import { 
     PlayCircleOutlined,
     PlusCircleOutlined,
-    ProfileOutlined,
     MenuUnfoldOutlined,
-    MenuFoldOutlined
+    MenuFoldOutlined,
+    LikeOutlined,
+    FieldTimeOutlined
 } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import cn from 'classnames'
+import generatePalette from '../../utils/generatePalette'
+import InlineLoader from '../InlineLoader'
 
 interface Props {
     children: JSX.Element
@@ -26,7 +28,7 @@ export type MenuItem = Required<MenuProps>['items'][number];
 
 const menuItems: MenuItemsData[] = [
     {
-        label: 'Tracks',
+        label: 'Library',
         key: '/',
         icon: <PlayCircleOutlined />
     },
@@ -36,16 +38,33 @@ const menuItems: MenuItemsData[] = [
         icon: <PlusCircleOutlined />
     },
     {
-        label: 'About',
-        key: '/about',
-        icon: <ProfileOutlined />
+        label: 'Liked',
+        key: '/liked',
+        icon: <LikeOutlined />
+    },
+    {
+        label: 'Recent',
+        key: '/recent',
+        icon: <FieldTimeOutlined />
     },
 ]
 
 const { Sider, Header, Content, Footer } = Layout
 
 const AppLayout = ({ children }: Props): JSX.Element => {
-    const { pathname } = useRouter()
+    const { pathname, push } = useRouter()
+    const [layoutLoading, setLayoutLoading] = useState<boolean>(false)
+
+    useEffect(() => {
+        setLayoutLoading(false)
+    }, [pathname])
+
+    const palette = generatePalette()
+
+    const handleMenuClick = ({ key }: { key: string }): void => {
+        push(key)
+        setLayoutLoading(true)
+    }
 
     const [collapsed, setCollapsed] = useState<boolean>(false)
     const handleCollapse = (): void => setCollapsed(state => !state)
@@ -54,19 +73,18 @@ const AppLayout = ({ children }: Props): JSX.Element => {
         ...i,
         label: (
             <div className="font-semibold">
-                <Link href={i.key}>{ i.label }</Link>
+                { i.label }
             </div>
         ),
     })), [])
 
     return (
         <Layout>
-            <Header className={cn(
-                "w-screen fixed z-[100] pl-8",
-            )}>
+            <InlineLoader isActive={layoutLoading}/>
+            <Header className={"w-screen fixed z-[100] pl-8"}>
                 {
                     React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-                        className: 'text-lg hover:text-[#177ddc] ease-in-out duration-200',
+                        className: `text-lg hover:text-[${palette[6]}] ease-in-out duration-200`,
                         onClick: handleCollapse
                     })
                 }
@@ -85,6 +103,7 @@ const AppLayout = ({ children }: Props): JSX.Element => {
                         items={items}
                         selectedKeys={[pathname]}
                         mode="inline"
+                        onClick={handleMenuClick}
                     />
                 </Sider>
                 <Content 
@@ -99,7 +118,7 @@ const AppLayout = ({ children }: Props): JSX.Element => {
                 </Content>
                 <Footer 
                     className={cn(
-                        "fixed py-0 bottom-0 right-0 border-t-2 border-[#177ddc] w-screen h-16 bg-[#141414] z-1 ease duration-200",
+                        `fixed py-0 bottom-0 right-0 border-t-2 border-[${palette[6]}] w-screen h-16 bg-[#141414] z-1 ease duration-200`,
                         collapsed ? "pl-20" : "pl-52"
                     )}
                 >
