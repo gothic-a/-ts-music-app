@@ -5,7 +5,7 @@ import { Typography } from "antd"
 
 const { Title } = Typography
 
-const IndexPage: NextPageWithLayout = (): JSX.Element => {
+const IndexPage: NextPageWithLayout = () => {
     return (
         <div>
             <Title level={1}>Tracks</Title>
@@ -13,7 +13,7 @@ const IndexPage: NextPageWithLayout = (): JSX.Element => {
     )
 }
 
-IndexPage.getLayout = function getLayout(page: ReactElement) {
+IndexPage.getLayout = function getLayout(page: ReactElement): JSX.Element {
     return (
         <AppLayout>
             {

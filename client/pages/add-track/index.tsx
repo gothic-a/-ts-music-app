@@ -5,7 +5,7 @@ import { Typography } from "antd"
 
 const { Title } = Typography
 
-const AddTrackPage: NextPageWithLayout = (): JSX.Element => {
+const AddTrackPage: NextPageWithLayout = () => {
     return (
         <div>
             <Title level={1}>Add Track</Title>

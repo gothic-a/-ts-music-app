@@ -1,4 +1,3 @@
-import generatePalette from '../../utils/generatePalette'
 import cn from 'classnames'
 import { SyntheticEvent, useEffect, useState } from 'react'
 
@@ -13,7 +12,6 @@ enum LoaderState {
 }
 
 const InlineLoader = ({ isActive }: Props): JSX.Element => {
-    const palette = generatePalette()
     const [loaderState, setLoaderState] = useState<LoaderState>(LoaderState.hide)
 
     const handleTransitionEnd = (e: SyntheticEvent): void => {
@@ -25,35 +23,24 @@ const InlineLoader = ({ isActive }: Props): JSX.Element => {
     }   
 
     useEffect(() => {
-        if(isActive) {
-            setLoaderState(LoaderState.transitionStart)
-        } else {
-            setLoaderState(LoaderState.transitionEnd)
-        }
+        if(isActive) setLoaderState(LoaderState.transitionStart)
+        else setLoaderState(LoaderState.transitionEnd)
     }, [isActive])
 
     return (
         <div 
             className={cn(
                 `${
-                    loaderState === LoaderState.transitionStart 
-                        ? 'w-5/6' 
-                        : loaderState === LoaderState.transitionEnd 
-                        ? 'w-screen' 
-                        : 'w-0' 
+                    loaderState === LoaderState.transitionStart ? 'w-5/6' 
+                        : loaderState === LoaderState.transitionEnd ? 'w-screen' 
+                            : 'w-0' 
                 }`,
                 "fixed top-0 h-1.5 z-[1000] ease-in-out duration-700",
             )}
             onTransitionEnd={handleTransitionEnd}
         >
             {
-                loaderState !== LoaderState.hide && (
-                    <div className={cn(
-                            `bg-[${palette[6]}]`,
-                            'w-full h-full opacity-80',
-                        )}
-                    />
-                )
+                loaderState !== LoaderState.hide && <div className="bg-[#177ddc] w-full h-full opacity-80"/>
             }
         </div>
     )
