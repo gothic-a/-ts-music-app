@@ -53,7 +53,7 @@ const Sidebar = ({ selectedKey, collapsed, onMenuClick }: Props): JSX.Element =>
 
     return (
         <Sider 
-            className="pt-16 h-screen fixed w-52 z-10"
+            className="pt-14 sm:pt-16 h-screen fixed w-52 z-10"
             collapsed={collapsed}
             collapsible
             collapsedWidth={80}
