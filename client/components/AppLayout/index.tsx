@@ -22,6 +22,8 @@ const AppLayout = ({ children }: Props): JSX.Element => {
 
     const handleCollapse: HandleCollapse = () => setCollapsed(state => !state)
     const handleMenuClick = (props: MenuInfo): void => {
+        if(router.pathname === props.key) return 
+
         router.push(props.key)
         setLayoutLoading(true)
     } 

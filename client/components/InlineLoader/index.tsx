@@ -35,7 +35,7 @@ const InlineLoader = ({ isActive }: Props): JSX.Element => {
                         : loaderState === LoaderState.transitionEnd ? 'w-screen' 
                             : 'w-0' 
                 }`,
-                "fixed top-0 h-1.5 z-[1000] ease-in-out duration-700",
+                "fixed top-0 h-1.5 z-[1000] ease-in-out duration-1000",
             )}
             onTransitionEnd={handleTransitionEnd}
         >

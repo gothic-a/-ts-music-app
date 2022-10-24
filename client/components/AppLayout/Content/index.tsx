@@ -13,8 +13,8 @@ const Content = ({ collapsed, children }: Props): JSX.Element => {
     return (
         <LayoutContent 
             className={cn(
-                "mt-14 sm:mt-16 mb-20 py-3 px-3 sm:py-6 sm:px-8 ease duration-200",
-                collapsed ? `ml-20` : 'ml-52',
+                "mt-14 sm:mt-16 mb-20 py-3 px-3 sm:py-6 sm:px-8 ease duration-200 h-auto",
+                collapsed ? "sm:ml-20" : "sm:ml-52",
             )}
         >
             {
