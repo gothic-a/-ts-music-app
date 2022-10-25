@@ -3,31 +3,20 @@ import { useDropzone } from "react-dropzone"
 import cn from 'classnames'
 import { Typography } from "antd"
 import type { FileRejection } from "react-dropzone"
-import type { SetFieldValue } from "../AddTrackView/AddTrackForm"
-import getAudioDuration from "../../utils/getAudioDuration"
-import { FormikErrors, FormikProps } from "formik"
-import { InitialValues } from "../AddTrackView/AddTrackForm"
+import getAudioDuration from "../../../utils/getAudioDuration"
+import type { FileWithAdditionalData, SetFile } from "../../../types/upload"
 
 const { Text } = Typography
 
 interface Props {
     acceptFormat: string,
-    setFile: Function,
+    setFile: SetFile<string, any>,
     fieldName: string,
-    errors?: any | null, 
+    error?: string | null, 
     withPreview?: boolean
 }
 
-export interface FileWithAdditionalData {
-    file: File,
-    additionalData: {
-        mbsize: number,
-        preview?: string,
-        duration?: number
-    }
-}
-
-const UploadFileDropzone = ({ acceptFormat, setFile, fieldName, withPreview, errors }: Props): JSX.Element => {
+const UploadFileDropzone = ({ acceptFormat, setFile, fieldName, withPreview, error }: Props): JSX.Element => {
     const onDrop = useCallback(async (acceptedFile: File[], rejectedFiles: FileRejection[]): Promise<void> => {
         const originalFile = acceptedFile[0]
 
@@ -39,12 +28,6 @@ const UploadFileDropzone = ({ acceptFormat, setFile, fieldName, withPreview, err
                 additionalData: {
                     mbsize 
                 }
-            }
-
-            const reader = new FileReader()
-            reader.readAsDataURL(originalFile)
-            reader.onload = function() {
-                console.log(reader.result)
             }
 
             if(acceptFormat.includes('audio')) {
@@ -65,17 +48,20 @@ const UploadFileDropzone = ({ acceptFormat, setFile, fieldName, withPreview, err
             className={cn(
                 "h-full flex items-center justify-center border-[2px] ease-in-out duration-300 rounded-xl border-dashed border-[#177ddc]/30 cursor-pointer hover:border-[#177ddc]/50 hover:bg-[#177ddc]/10",
                 `${isDragActive && "border-[#177ddc]/80 bg-[#177ddc]/10"}`,
-                `${(isDragReject || errors) && "border-rose-500/80 bg-rose-500/10"}`
+                `${(isDragReject || error) && "border-rose-500/80 bg-rose-500/10"}`
             )}
         >
             <input {...getInputProps()}/>
             <Text className="flex text-center text-lg ease-in-out duration-300">
                 {
-                    errors 
-                        ? <>
-                            {errors}<br/>
-                            Choose another one
-                        </> 
+                    error 
+                        ? (
+                            <div>
+                                <span className="text-rose-500/80">{error}</span>
+                                <br/>
+                                Choose another one
+                            </div> 
+                        )
                         : isDragReject 
                             ? <>Incorrect file format!</>
                             : isDragActive 

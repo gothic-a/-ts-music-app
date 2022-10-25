@@ -1,75 +1,43 @@
-import { Formik, Form } from 'formik'
-import type { FormikProps, FormikValues, FormikErrors } from 'formik'
-import { FormEvent, MouseEventHandler, useCallback, useMemo } from 'react'
-import UploadFileDropzone from '../../UploadFileDropzone'
+import { Formik, Form, FormikErrors } from 'formik'
+import { useCallback, useMemo } from 'react'
+import UploadFileDropzone from '../UploadFileDropzone'
 import { Input } from 'formik-antd'
 import TrackCard from '../../TrackCard'
-import { Button } from 'antd'
-import * as yup from 'yup'
-import { Typography } from 'antd'
-import type { FileWithAdditionalData } from '../../UploadFileDropzone'
-import { FormSteps, HandleStep } from '../../../pages/add-track'
-import { createTrack } from '../../../api'
+import { Button, Typography } from 'antd'
+import { SetProgress } from '../../../types/api'
 
-const { Title, Text } = Typography
+import { createTrack } from '../../../api'
+import { validationSchema } from './validationSchema'
+
+import type { FormikProps, FormikValues } from 'formik'
+import type { UploadFormInitialValues, UploadFormErrors, HandleSubmit, HandleStepStatus, HandleSetFile, SetUploadFormFieldValue } from '../../../types/upload'
+
+const { Title } = Typography
 
 interface Props {
     step: number, 
     handleChangeStep: Function,
-    handleSetStepSuccess: HandleStep,
-    handleSetStepFail: HandleStep
+    handleSetStepSuccess: HandleStepStatus,
+    handleSetStepFail: HandleStepStatus,
+    setProgress: SetProgress
 }
 
-export interface InitialValues {
+const initialValues: UploadFormInitialValues = {
     image: {
-        file: File;
-        additionalData: {
-            mbsize: number,
-            preview: string,
-        }
+        file: null,
+        additionalData: null
     },
-    track: FileWithAdditionalData,
+    track: {
+        file: null,
+        additionalData: null
+    },
     description: {
-        artist: string,
-        name: string,
+        artist: null,
+        name: null
     }
 }
 
-type Errors = FormikErrors<{
-    errors?: {
-        image?: {
-            additionalData?: {
-                mbsize?: string,
-            }
-        },
-        track?: {
-            additionalData?: {
-                mbsize?: string,
-                duration?: string,
-            }
-        }
-    }
-}>
-
-export type SetFieldValue = (field: string, value: any, shouldValidate?: boolean) => Promise<Errors | {}>;
-export type HandleSubmit = (e?: FormEvent<HTMLFormElement>) => void
-
-const AddTrackForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStepSuccess }: Props): JSX.Element => {
-    const initialValues: InitialValues = {
-        image: {
-            file: null,
-            additionalData: null
-        },
-        track: {
-            file: null,
-            additionalData: null
-        },
-        description: {
-            artist: null,
-            name: null
-        }
-    }
-
+const UploadForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStepSuccess, setProgress }: Props): JSX.Element => {
     const titleText = useMemo(() => (
         step === 0 
             ? 'Upload image for track (1MB max)' 
@@ -77,6 +45,8 @@ const AddTrackForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStep
                 ? 'Upload track file (20MB max)' 
                 : 'Input track description'
     ), [step])
+
+
 
     const handleFormSubmit = async (values: FormikValues): Promise<void> => {
         const dto = {
@@ -90,7 +60,7 @@ const AddTrackForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStep
             const formData = new FormData()
             Object.entries(dto).forEach(i => formData.append(i[0], i[1]))
 
-            const { data } = await createTrack(formData)
+            const { data } = await createTrack(formData, setProgress)
         } catch(e) {
             console.log(e.response)
         }
@@ -98,7 +68,7 @@ const AddTrackForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStep
 
     const submitButtonClick = (handleSubmit: HandleSubmit) => () => handleSubmit()
 
-    const handleSetFile = useCallback((setFieldValue: SetFieldValue) => async (field: FormSteps, value: FileWithAdditionalData): Promise<InitialValues | void> => {
+    const handleSetFile: HandleSetFile = useCallback((setFieldValue) => async (field, value) => {
         const set = await setFieldValue(field, value, true)
         if(('track' in set && field === 'track') || ('image' in set && field === 'image')) {
             handleSetStepFail(field)
@@ -109,25 +79,6 @@ const AddTrackForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStep
         handleChangeStep()
     }, [])
 
-    const validationSchema = yup.object().shape({
-        track: yup.object().shape({
-            additionalData: yup.object().shape({
-                mbsize: yup.number().required().max(20, 'Your file bigger than 20MB.'),
-                duration: yup.number().required().max(3600, 'Your track longer then 1 hour.')
-            })
-        }),
-        image: yup.object().shape({
-            additionalData: yup.object().shape({
-                mbsize: yup.number().required().max(1, 'Your file bigger than 1MB.'),
-                preview: yup.string().required(),
-            })
-        }),
-        description: yup.object().shape({
-            artist: yup.string().required(),
-            name: yup.string().required(),
-        })
-    })
-
     return (
         <Formik
             initialValues={initialValues}
@@ -135,7 +86,7 @@ const AddTrackForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStep
             validationSchema={validationSchema}
             isInitialValid={false}
         >
-            {({ values, setFieldValue, isValid, handleSubmit, errors }: FormikProps<FormikValues> & Errors) => (
+            {({ values, setFieldValue, isValid, handleSubmit, errors }: FormikProps<FormikValues> & FormikErrors<UploadFormErrors>) => (
                 <div className="grid grid-cols-3 gap-x-8 gap-y-4 mt-8">
                     <Title level={4} className="col-start-1 col-end-4">
                         {
@@ -147,10 +98,10 @@ const AddTrackForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStep
                             step === 0 && (
                                 <UploadFileDropzone 
                                     acceptFormat='image/*'
-                                    setFile={handleSetFile(setFieldValue as SetFieldValue)}
+                                    setFile={handleSetFile(setFieldValue as SetUploadFormFieldValue)}
                                     fieldName="image"
                                     withPreview={true}
-                                    errors={errors?.image?.additionalData?.mbsize ?? null}
+                                    error={errors?.image?.additionalData?.mbsize ?? null}
                                 />
                             )
                         }
@@ -158,9 +109,9 @@ const AddTrackForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStep
                             step === 1 && (
                                 <UploadFileDropzone 
                                     acceptFormat='audio/*'
-                                    setFile={handleSetFile(setFieldValue as SetFieldValue)}
+                                    setFile={handleSetFile(setFieldValue as SetUploadFormFieldValue)}
                                     fieldName="track"
-                                    errors={errors?.track?.additionalData?.mbsize || errors?.track?.additionalData?.duration || null}
+                                    error={errors?.track?.additionalData?.mbsize || errors?.track?.additionalData?.duration || null}
                                 />
                             )
                         }
@@ -207,4 +158,4 @@ const AddTrackForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStep
     )
 }   
 
-export default AddTrackForm
+export default UploadForm

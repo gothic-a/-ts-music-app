@@ -1,18 +1,16 @@
 import { Steps } from 'antd'
 import { useMemo } from 'react'
-import type { Step } from '../../../pages/add-track'
+import type { ProgressStep, OnChangeUploadStep } from '../../../types/upload'
 
 const { Step } = Steps
 
 interface Props {
     current: number,
-    onChangeStep: any,
-    steps: Step[]
+    onChangeStep: OnChangeUploadStep,
+    steps: ProgressStep[]
 }
 
-export type Status = 'error' | 'process' | 'finish' | 'wait'
-
-const AddTrackSteps = ({ current, onChangeStep, steps }: Props): JSX.Element => {
+const UploadSteps = ({ current, onChangeStep, steps }: Props): JSX.Element => {
     const renderSteps: React.ReactElement[] = useMemo(() => steps.map((s, idx) => (
         <Step 
             key={idx + s.title}
@@ -36,4 +34,4 @@ const AddTrackSteps = ({ current, onChangeStep, steps }: Props): JSX.Element => 
     )
 }
 
-export default AddTrackSteps
+export default UploadSteps

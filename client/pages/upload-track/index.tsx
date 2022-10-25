@@ -1,64 +1,17 @@
-import type { NextPageWithLayout } from "../_app"
-import React, { ReactElement, useCallback, useEffect } from "react"
-import AppLayout from "../../components/AppLayout"
-import AddTrackSteps from "../../components/AddTrackView/AddTrackSteps"
-import { useState } from "react"
-import AddTrackForm from "../../components/AddTrackView/AddTrackForm"
-import type { Status } from "../../components/AddTrackView/AddTrackSteps"
+import React, { ReactElement, useCallback, useEffect, useState } from "react"
 import { Progress } from "antd"
+import AppLayout from "../../components/AppLayout"
+import UploadSteps from "../../components/UploadView/UploadSteps"
+import UploadForm from "../../components/UploadView/UploadForm"
+import { Direction, stepsData } from "./data"
 
-export enum Direction {
-    back = 'back',
-    forward = 'forward'
-}
+import type { NextPageWithLayout } from "../_app"
+import type { ProgressStep, HandleStepStatus } from "../../types/upload"
 
-export enum FormSteps {
-    'image' = "image",
-    'track' = "track",
-    'description' = "description"
-}
-
-export interface Step {
-    title: string,
-    description: string,
-    isUnlock: boolean,
-    isFailed: boolean,
-    isSuccess: boolean,
-    formStep: FormSteps
-} 
-
-const stepsData: Step[] = [
-    {
-        title: 'Image',
-        description: 'Pick image file',
-        isUnlock: true,
-        isFailed: false,
-        isSuccess: false,
-        formStep: FormSteps.image
-    },
-    {
-        title: 'Track',
-        description: 'Pick track file',
-        isUnlock: false,
-        isFailed: false,
-        isSuccess: false,
-        formStep: FormSteps.track
-    },
-    {
-        title: 'Description',
-        description: 'Add description',
-        isUnlock: false,
-        isFailed: false,
-        isSuccess: false,
-        formStep: FormSteps.description
-    }
-]
-
-export type HandleStep = (formStep: FormSteps) => void
-
-const AddTrackPage: NextPageWithLayout = () => {
+const UploadPage: NextPageWithLayout = () => {
     const [currentStep, setCurrentStep] = useState<number>(0)
-    const [stepsList, setStepsList] = useState<Step[]>(stepsData)
+    const [stepsList, setStepsList] = useState<ProgressStep[]>(stepsData)
+    const [progress, setProgress] = useState<number>(null)
 
     function handleChangeStep(direction: Direction): () => void
     function handleChangeStep(value: number): void
@@ -67,7 +20,7 @@ const AddTrackPage: NextPageWithLayout = () => {
         else setCurrentStep(directionOrValue)
     }
 
-    const handleSetStepSuccess: HandleStep = (formStep: FormSteps): void => {
+    const handleSetStepSuccess: HandleStepStatus = (formStep) => {
         setStepsList(state => {
             const idx = state.findIndex(s => s.formStep === formStep)
             const step = state[idx]
@@ -86,7 +39,7 @@ const AddTrackPage: NextPageWithLayout = () => {
         })
     }
 
-    const handleSetStepFail: HandleStep = (formStep: FormSteps): void => {
+    const handleSetStepFail: HandleStepStatus = (formStep) => {
         setStepsList(state => {
             const idx = state.findIndex(s => s.formStep === formStep)
             const step = state[idx]
@@ -102,23 +55,24 @@ const AddTrackPage: NextPageWithLayout = () => {
 
     return (
         <div className="flex flex-row-reverse justify-between sm:flex-col h-max">
-            <AddTrackSteps 
+            <UploadSteps 
                 current={currentStep}
                 steps={stepsList}
                 onChangeStep={handleChangeStep}
             />
-            <AddTrackForm
+            <UploadForm
                 handleChangeStep={handleChangeStep(Direction.forward)}
                 step={currentStep}
                 handleSetStepSuccess={handleSetStepSuccess}
                 handleSetStepFail={handleSetStepFail}
+                setProgress={setProgress}
             />
-            <Progress percent={100} className="mt-8"/>
+            <Progress percent={progress ?? 0} showInfo={progress !== null} className="mt-8"/>
         </div>
     )
 }
 
-AddTrackPage.getLayout = function getLayout(page: ReactElement): JSX.Element {
+UploadPage.getLayout = function getLayout(page: ReactElement): JSX.Element {
     return (
         <AppLayout>
             {
@@ -128,4 +82,4 @@ AddTrackPage.getLayout = function getLayout(page: ReactElement): JSX.Element {
     )
 }
 
-export default AddTrackPage
+export default UploadPage
