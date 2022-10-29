@@ -11,7 +11,7 @@ export enum FormSteps {
     'description' = "description"
 }
 
-export const stepsData: ProgressStep[] = [
+export const initialStepsData: ProgressStep[] = [
     {
         title: 'Image',
         description: 'Pick image file',

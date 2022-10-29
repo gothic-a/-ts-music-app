@@ -16,7 +16,15 @@ const UploadSteps = ({ current, onChangeStep, steps }: Props): JSX.Element => {
             key={idx + s.title}
             disabled={s.isUnlock ? false : !(idx <= current)}
             title={s.title}
-            status={s.isFailed ? 'error' : current === idx ? 'process' : s.isSuccess ? 'finish' : 'wait'}
+            status={
+                s.isFailed 
+                    ? 'error' 
+                    : current === idx 
+                        ? 'process' 
+                        : s.isSuccess 
+                            ? 'finish' 
+                            : 'wait'
+            }
         />
     )), [steps, current])
 

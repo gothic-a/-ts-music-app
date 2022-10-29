@@ -1,4 +1,5 @@
 import { Typography, Divider } from 'antd'
+import cn from 'classnames'
 
 const { Text } = Typography
 
@@ -8,12 +9,16 @@ interface Props {
     name?: string,
     artist?: string,
     trackSize?: number,
-    trackDuration?: number
+    trackDuration?: number,
+    className?: string
 }
 
-const TrackCard = ({ imagePreview, trackPath, name, artist, trackSize, trackDuration }: Props): JSX.Element => {
+const TrackCard = ({ imagePreview, trackPath, name, artist, trackSize, trackDuration, className }: Props): JSX.Element => {
     return (
-        <div className="flex flex-col w-full p-4 bg-[#1f1f1f] rounded-lg h-max items-center">
+        <div className={cn(
+            "flex flex-col w-full p-4 bg-[#1f1f1f] rounded-lg h-max items-center duration-700",
+            className
+        )}>
             <div className="w-36 h-36 rounded-full flex mb-4 bg-[#141414]">
                 {
                     imagePreview && (

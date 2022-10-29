@@ -9,6 +9,12 @@ module.exports = {
       screens: {
         'sm': '576px',
       },
+      brightness: {
+        35: '.35',
+      },
+      blur: {
+        'xs': '2px'
+      }
     }
   },
   plugins: [],

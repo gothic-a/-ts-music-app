@@ -14,7 +14,7 @@ export interface ProgressStep {
 } 
 
 export interface FileWithAdditionalData {
-    file: File,
+    file: File & { path: string }, 
     additionalData: {
         mbsize: number,
         preview?: string,

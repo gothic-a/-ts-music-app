@@ -1,6 +1,6 @@
 export enum Routes {
     index =  '/',
-    addTrack = '/add-track',
+    addTrack = '/upload-track',
     liked = '/liked',
     recent = '/recent'
 }
