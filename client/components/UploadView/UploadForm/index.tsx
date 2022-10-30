@@ -7,8 +7,10 @@ import { Button, Typography, Progress } from 'antd'
 import { SetProgress } from '../../../types/api'
 import cn from 'classnames'
 import SuccessMessage from '../../SuccessMessage'
+import { uploadTrackThunk } from '../../../store/slices/uploadTrackSlice'
+import { useAppDispatch, useAppSelector } from '../../../hooks'
+import { resetUploadState } from '../../../store/slices/uploadTrackSlice'
 
-import { createTrack } from '../../../api'
 import { validationSchema } from './validationSchema'
 
 import { FormikProps, FormikValues, useFormikContext } from 'formik'
@@ -59,17 +61,9 @@ const IsFieldValid = ({ onValid, onError, onChange, field }: ValidProps): null =
     return null
 }
 
-
-
-const uploadTrackState = {
-    progress: null,
-    loading: false,
-    success: false,
-    error: false
-}
-
 const UploadForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStepSuccess, onReset }: Props): JSX.Element => {
-    const [uploadTrack, setUploadTrack] = useState(uploadTrackState)
+    const dispatch = useAppDispatch()
+    const { loading, success, progress }  = useAppSelector(state => state.uploadTrack)
  
     const titleText = useMemo(() => (
         step === 0 
@@ -79,17 +73,23 @@ const UploadForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStepSu
                 : 'Input track description'
     ), [step])
 
-    const setProgress = (value: number): void => setUploadTrack(state => ({ ...state, progress: value }))
+    const resetState = () => dispatch(resetUploadState())
+
+    useEffect(() => {
+
+        return () => {
+            const clear = async () => resetState()
+            clear()
+        }
+    }, [])
     
     const handleResetForm = (resetForm) => (): void => {
-        setUploadTrack(uploadTrackState)
+        resetState()
         resetForm()
         onReset()
     }
 
     const handleFormSubmit = async (values: FormikValues): Promise<void> => {
-        setUploadTrack(state => ({ ...state, loading: true }))
-
         const dto = {
             artist: values.description.artist,
             name: values.description.name,
@@ -97,15 +97,10 @@ const UploadForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStepSu
             audio: values.track.file
         }
 
-        try {
-            const formData = new FormData()
-            Object.entries(dto).forEach(i => formData.append(i[0], i[1]))
+        const formData = new FormData()
+        Object.entries(dto).forEach(i => formData.append(i[0], i[1]))
 
-            const { data } = await createTrack(formData, setProgress)
-            setUploadTrack(state => ({ ...state, loading: false, success: true }))
-        } catch(e) {
-            setUploadTrack(state => ({ ...state, loading: false, error: true }))
-        }
+        dispatch(uploadTrackThunk(formData))
     }
 
     const submitButtonClick = (handleSubmit: HandleSubmit) => () => handleSubmit()
@@ -188,7 +183,7 @@ const UploadForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStepSu
                         </Form>
                         <div>
                             <div className="relative" >
-                                <SuccessMessage isActive={uploadTrack.success}/>
+                                <SuccessMessage isActive={success}/>
                                 <TrackCard 
                                     imagePreview={!errors.image && values?.image?.additionalData?.preview}
                                     trackPath={values?.track?.file?.path}
@@ -196,19 +191,19 @@ const UploadForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStepSu
                                     artist={values.description?.artist}
                                     trackSize={values.track?.additionalData?.mbsize}
                                     trackDuration={values.track?.additionalData?.duration}
-                                    className={uploadTrack.success && "blur-sm brightness-35"}
+                                    className={success && "blur-sm brightness-35"}
                                 />
                             </div>
                             <Button 
                                 className="mt-4 w-full"
                                 type='primary' 
                                 size="large"
-                                onClick={!uploadTrack.success ? submitButtonClick(handleSubmit) : handleResetForm(resetForm)}
-                                disabled={ !uploadTrack.success && (!isValid || uploadTrack.loading)}
-                                loading={uploadTrack.loading}
+                                onClick={!success ? submitButtonClick(handleSubmit) : handleResetForm(resetForm)}
+                                disabled={!success && (!isValid || loading)}
+                                loading={loading}
                             >
                                 {
-                                    uploadTrack.success ? 'Upload another one' : 'Upload'
+                                    success ? 'Upload another one' : 'Upload'
                                 }
                             </Button>
                         </div>
@@ -216,7 +211,7 @@ const UploadForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStepSu
                 )}
             </Formik>
             {
-                uploadTrack.loading || uploadTrack.progress === 100 && <Progress percent={uploadTrack.progress ?? 0} showInfo={uploadTrack.progress !== null} className="mt-8"/>
+                (loading || progress === 100) && <Progress percent={progress ?? 0} showInfo={progress !== null} className="mt-8"/>
             }
         </>
     )

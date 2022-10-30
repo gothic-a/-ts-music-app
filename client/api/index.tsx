@@ -11,7 +11,7 @@ const api = axios.create({
 
 const onUploadProgress: OnUploadProgress = (cb) => (progressEvent) => cb(progressEvent.progress * 100)
 
-export const createTrack = (data: FormData, setProgress: SetProgress): AxiosPromise<Track> => {
+export const uploadTrack = (data: FormData, setProgress: SetProgress): AxiosPromise<Track> => {
     return api.post('/tracks/create', data, { onUploadProgress: onUploadProgress(setProgress) })
 }
 
