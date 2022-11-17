@@ -15,6 +15,9 @@ export class Track {
     @Prop()
     text: string
 
+    @Prop()
+    duration: number
+
     @Prop({ default: 0 })
     listens: number
 

@@ -1,6 +1,6 @@
 import { FormEvent } from "react"
 import { FormikErrors } from "formik"
-import { FormSteps } from "../pages/upload-track/data"
+import { FormSteps } from "../pages/upload-track/config"
 
 export type Status = 'error' | 'process' | 'finish' | 'wait'
 

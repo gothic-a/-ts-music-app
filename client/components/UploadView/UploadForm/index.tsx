@@ -34,7 +34,11 @@ const initialValues: UploadFormInitialValues = {
     },
     track: {
         file: null,
-        additionalData: null
+        additionalData: {
+            mbsize: null,
+            preview: null,
+            duration: null
+        }
     },
     description: {
         artist: null,
@@ -94,7 +98,8 @@ const UploadForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStepSu
             artist: values.description.artist,
             name: values.description.name,
             image: values.image.file,
-            audio: values.track.file
+            audio: values.track.file,
+            duration: values.track.additionalData.duration
         }
 
         const formData = new FormData()

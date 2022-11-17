@@ -2,7 +2,7 @@ import React, { ReactElement, useEffect, useState } from "react"
 import AppLayout from "../../components/AppLayout"
 import UploadSteps from "../../components/UploadView/UploadSteps"
 import UploadForm from "../../components/UploadView/UploadForm"
-import { Direction, initialStepsData } from "./data"
+import { Direction, initialStepsData } from "./config"
 import JSONClone from "../../utils/deepClone"
 
 import type { NextPageWithLayout } from "../_app"
@@ -12,8 +12,10 @@ const UploadPage: NextPageWithLayout = () => {
     const [currentStep, setCurrentStep] = useState<number>(0)
     const [stepsList, setStepsList] = useState<ProgressStep[]>(null)
 
+    const setInitialStepsData = (): void => setStepsList(JSONClone<ProgressStep[]>(initialStepsData))
+
     useEffect(() => {
-        setStepsList(JSONClone<ProgressStep[]>(initialStepsData))
+        setInitialStepsData()
     }, [])
 
 
@@ -26,7 +28,7 @@ const UploadPage: NextPageWithLayout = () => {
 
     const handleResetSteps = (): void => {
         setCurrentStep(0)
-        setStepsList(JSONClone<ProgressStep[]>(initialStepsData)) 
+        setInitialStepsData()
     }
 
     const handleSetStepSuccess: HandleStepStatus = (formStep) => {
@@ -52,7 +54,6 @@ const UploadPage: NextPageWithLayout = () => {
                     step
                 ]
             }
-
         })
     }
 
