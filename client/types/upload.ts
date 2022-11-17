@@ -1,8 +1,18 @@
 import { FormEvent } from "react"
 import { FormikErrors } from "formik"
 import { FormSteps } from "../pages/upload-track/config"
+import { ErrorType } from "../utils/parseError"
+import { ExtendedTrack } from "./track"
 
 export type Status = 'error' | 'process' | 'finish' | 'wait'
+
+export interface UploadTrackSliceState {
+    data: ExtendedTrack | null,
+    loading: boolean,
+    error: ErrorType | null,
+    success: boolean,
+    progress: number | null
+}
 
 export interface ProgressStep {
     title: string,

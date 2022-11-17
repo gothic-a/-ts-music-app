@@ -1,18 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { Track } from '../../../types/track' 
-import type { AxiosError } from 'axios'
 import { uploadTrack } from '../../../api/index'
 import { parseError } from '../../../utils/parseError'
 import type { ErrorType } from '../../../utils/parseError'
 import type { SetProgress } from '../../../types/api'
+import { UploadTrackSliceState } from "../../../types/upload";
 
-interface UploadTrackSliceState {
-    data: Track | null,
-    loading: boolean,
-    error: ErrorType | null,
-    success: boolean,
-    progress: number | null
-}
 
 const initialState: UploadTrackSliceState = {
     data: null,

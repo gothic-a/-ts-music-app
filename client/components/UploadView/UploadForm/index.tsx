@@ -1,5 +1,5 @@
-import { Formik, Form, FormikErrors } from 'formik'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Formik, Form } from 'formik'
+import { useCallback, useEffect, useMemo } from 'react'
 import UploadFileDropzone from '../UploadFileDropzone'
 import { Input } from 'formik-antd'
 import TrackCard from '../../TrackCard'
@@ -53,10 +53,9 @@ interface IsValidProps {
 }
 
 const IsFieldValid = ({ onValid, onError, field }: IsValidProps): null => {
-    const { touched, errors }  = useFormikContext<UploadFormInitialValues>()
+    const { touched, errors } = useFormikContext<UploadFormInitialValues>()
 
     useEffect(() => {
-
         if(!errors[field] && touched[field]) onValid && onValid(field)
         else if(touched[field]) onError && onError(field)
     }, [touched, errors])
