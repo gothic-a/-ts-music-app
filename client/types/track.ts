@@ -10,9 +10,14 @@ export interface Track {
     _id: string,
     name: string,
     artist: string,
-    text: string,
+    text?: string,
     listens: number,
     image: string,
     audio: string,
-    comments: Comment[],
+    comments?: Comment[],
+    duration: 145,
+}
+
+export interface ExtendedTrack extends Track {
+    convertedDuration: string
 }

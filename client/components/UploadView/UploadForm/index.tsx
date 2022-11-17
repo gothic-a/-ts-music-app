@@ -18,7 +18,7 @@ import type { UploadFormInitialValues, UploadFormErrors, HandleSubmit, HandleSte
 
 const { Title } = Typography
 
-interface Props {
+interface UploadFormProps {
     step: number, 
     handleChangeStep: Function,
     handleSetStepSuccess: HandleStepStatus,
@@ -42,14 +42,13 @@ const initialValues: UploadFormInitialValues = {
     }
 }
 
-interface ValidProps {
+interface IsValidProps {
     onValid?: Function,
     onError?: Function,
-    onChange?: Function,
     field?: string,
 }
 
-const IsFieldValid = ({ onValid, onError, onChange, field }: ValidProps): null => {
+const IsFieldValid = ({ onValid, onError, field }: IsValidProps): null => {
     const { touched, errors }  = useFormikContext<UploadFormInitialValues>()
 
     useEffect(() => {
@@ -61,7 +60,7 @@ const IsFieldValid = ({ onValid, onError, onChange, field }: ValidProps): null =
     return null
 }
 
-const UploadForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStepSuccess, onReset }: Props): JSX.Element => {
+const UploadForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStepSuccess, onReset }: UploadFormProps): JSX.Element => {
     const dispatch = useAppDispatch()
     const { loading, success, progress }  = useAppSelector(state => state.uploadTrack)
  
@@ -83,11 +82,12 @@ const UploadForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStepSu
         }
     }, [])
     
-    const handleResetForm = (resetForm) => (): void => {
+    const handleResetForm = (resetForm: () => void) => (): void => {
         resetState()
         resetForm()
         onReset()
     }
+    const handleSubmitForm = (handleSubmit: HandleSubmit) => () => handleSubmit()
 
     const handleFormSubmit = async (values: FormikValues): Promise<void> => {
         const dto = {
@@ -102,8 +102,6 @@ const UploadForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStepSu
 
         dispatch(uploadTrackThunk(formData))
     }
-
-    const submitButtonClick = (handleSubmit: HandleSubmit) => () => handleSubmit()
 
     const handleSetFile: HandleSetFile = useCallback((setFieldValue) => async (field, value) => {
         const set = await setFieldValue(field, value, true)
@@ -126,8 +124,6 @@ const UploadForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStepSu
                 validateOnMount={true}
             >
                 {({ values, setFieldValue, isValid, handleSubmit, errors, resetForm }: FormikProps<UploadFormInitialValues & UploadFormErrors>) => (
-                    
-                        
                     <div className="grid grid-cols-3 gap-x-8 gap-y-4 mt-8">
                         <Title level={4} className="col-start-1 col-end-4">
                             {
@@ -198,7 +194,7 @@ const UploadForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStepSu
                                 className="mt-4 w-full"
                                 type='primary' 
                                 size="large"
-                                onClick={!success ? submitButtonClick(handleSubmit) : handleResetForm(resetForm)}
+                                onClick={success ? handleResetForm(resetForm) : handleSubmitForm(handleSubmit)}
                                 disabled={!success && (!isValid || loading)}
                                 loading={loading}
                             >

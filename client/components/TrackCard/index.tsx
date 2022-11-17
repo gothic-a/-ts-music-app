@@ -1,5 +1,7 @@
 import { Typography, Divider } from 'antd'
 import cn from 'classnames'
+import convertSecToMin from '../../utils/convertSecToMin'
+import React from 'react'
 
 const { Text } = Typography
 
@@ -14,6 +16,8 @@ interface Props {
 }
 
 const TrackCard = ({ imagePreview, trackPath, name, artist, trackSize, trackDuration, className }: Props): JSX.Element => {
+    const convertedDuration = trackDuration && convertSecToMin(trackDuration, { label: true })
+    
     return (
         <div className={cn(
             "flex flex-col w-full p-4 bg-[#1f1f1f] rounded-lg h-max items-center duration-700",
@@ -37,8 +41,8 @@ const TrackCard = ({ imagePreview, trackPath, name, artist, trackSize, trackDura
                             <div className='flex w-full justify-between items-center'>
                                 <Text className="w-4/5">{trackPath}</Text>
                                 <div className="flex flex-col w-1/5 text-xs opacity-60 bg-[#141414] py-1 px-2 rounded-lg">
-                                    <Text className="mb-1">{trackSize} MB</Text>
-                                    <Text>{trackDuration} s</Text>
+                                    <Text className="mb-1">{ trackSize } MB</Text>
+                                    <Text>{ convertedDuration }</Text>
                                 </div>
                             </div>
                             <Divider className="my-4"/>
@@ -53,4 +57,4 @@ const TrackCard = ({ imagePreview, trackPath, name, artist, trackSize, trackDura
     )
 }
 
-export default TrackCard
+export default React.memo(TrackCard)

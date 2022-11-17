@@ -4,11 +4,12 @@ import cn from 'classnames'
 
 interface Props {
     collapsed: boolean,
+    children: JSX.Element
 }
 
 const { Footer: LayoutFooter } = Layout
 
-const Footer = ({ collapsed }: Props): JSX.Element => {
+const Footer = ({ collapsed, children }: Props): JSX.Element => {
     return (
         <LayoutFooter 
             className={cn(
@@ -16,6 +17,9 @@ const Footer = ({ collapsed }: Props): JSX.Element => {
                 collapsed ? "pl-20" : "pl-52"
             )}
         >
+            {
+                children
+            }
         </LayoutFooter>
     )
 }

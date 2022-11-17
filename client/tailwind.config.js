@@ -14,6 +14,9 @@ module.exports = {
       },
       blur: {
         'xs': '2px'
+      },
+      padding: {
+        '22': '5.5rem'
       }
     }
   },

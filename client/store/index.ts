@@ -3,7 +3,6 @@ import { createWrapper, HYDRATE } from "next-redux-wrapper";
 import { AppStore } from "../types/store";
 import uploadTrackSlice from "./slices/uploadTrackSlice";
 
-
 export const makeStore = () => (
     configureStore({
         reducer: {

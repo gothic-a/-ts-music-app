@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Layout } from 'antd'
-import { useRouter } from 'next/router'
+import Router, { useRouter } from 'next/router'
 import InlineLoader from '../InlineLoader'
 import Sidebar from './Sidebar'
 import Header from './Header'
@@ -8,6 +8,7 @@ import Footer from './Footer'
 import Content from './Content'
 import type { MenuInfo } from 'rc-menu/lib/interface'
 import { Routes } from './routes'
+import Player from '../Player'
 
 interface Props {
     children: JSX.Element
@@ -20,16 +21,24 @@ const AppLayout = ({ children }: Props): JSX.Element => {
     const [layoutLoading, setLayoutLoading] = useState<boolean>(false)
     const [collapsed, setCollapsed] = useState<boolean>(false)
 
+    const startLoading = (): void => setLayoutLoading(true);
+    const stopLoading = (): void => setLayoutLoading(false);
+
     const handleCollapse: HandleCollapse = () => setCollapsed(state => !state)
     const handleMenuClick = (props: MenuInfo): void => {
         if(router.pathname === props.key) return 
 
         router.push(props.key)
-        setLayoutLoading(true)
     } 
 
     useEffect(() => {
-        setLayoutLoading(false)
+        Router.events.on('routeChangeStart', startLoading); 
+        Router.events.on('routeChangeComplete', stopLoading);
+
+        return () => {
+            Router.events.off('routeChangeStart', startLoading);
+            Router.events.off('routeChangeComplete', stopLoading);
+        }
     }, [router.pathname])
 
     return (
@@ -50,7 +59,9 @@ const AppLayout = ({ children }: Props): JSX.Element => {
                         children
                     }
                 </Content>
-                <Footer collapsed={collapsed}/>
+                <Footer collapsed={collapsed}>
+                    <Player />
+                </Footer>
             </Layout>
         </Layout>
     )

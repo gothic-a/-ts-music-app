@@ -1,6 +1,7 @@
 import { CheckCircleOutlined } from "@ant-design/icons"
 import { Typography } from "antd"
 import cn from 'classnames'
+import React from "react"
 
 const { Text } = Typography
 
@@ -21,4 +22,4 @@ const SuccessMessage = ({ isActive }: Props): JSX.Element => {
     )
 }
 
-export default SuccessMessage
+export default React.memo(SuccessMessage)
