@@ -4,13 +4,13 @@ import type { ProgressStep, OnChangeUploadStep } from '../../../types/upload'
 
 const { Step } = Steps
 
-interface Props {
+interface UploadStepsProps {
     current: number,
     onChangeStep: OnChangeUploadStep,
     steps: ProgressStep[]
 }
 
-const UploadSteps = ({ current, onChangeStep, steps }: Props): JSX.Element => {
+const UploadSteps = ({ current, onChangeStep, steps }: UploadStepsProps): JSX.Element => {
     const renderSteps: React.ReactElement[] = useMemo(() => steps.map((s, idx) => (
         <Step 
             key={idx + s.title}

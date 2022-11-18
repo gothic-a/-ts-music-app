@@ -1,39 +1,9 @@
 import { Menu, Layout } from 'antd'
-import type { MenuItem } from '../../../types/menu'
 import { Routes } from '../routes'
 import type { MenuClickEventHandler } from 'rc-menu/lib/interface'
+import { menuData } from './config'
 
-import { 
-    PlayCircleOutlined,
-    PlusCircleOutlined,
-    LikeOutlined,
-    FieldTimeOutlined
-} from '@ant-design/icons'
-
-const menuData: MenuItem[] = [
-    {
-        label: 'Library',
-        key: Routes.index,
-        icon: <PlayCircleOutlined />
-    },
-    {
-        label: 'Add Track',
-        key: Routes.addTrack,
-        icon: <PlusCircleOutlined />
-    },
-    {
-        label: 'Liked',
-        key: Routes.liked,
-        icon: <LikeOutlined />
-    },
-    {
-        label: 'Recent',
-        key: Routes.recent,
-        icon: <FieldTimeOutlined />
-    },
-]
-
-interface Props {
+interface SidebarProps {
     selectedKey: Routes,
     collapsed: boolean,
     onMenuClick: MenuClickEventHandler
@@ -41,7 +11,7 @@ interface Props {
 
 const { Sider } = Layout
 
-const Sidebar = ({ selectedKey, collapsed, onMenuClick }: Props): JSX.Element => {
+const Sidebar = ({ selectedKey, collapsed, onMenuClick }: SidebarProps): JSX.Element => {
     const items = menuData.map(i => ({
         ...i,
         label: (

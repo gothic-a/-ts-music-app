@@ -5,11 +5,11 @@ import React from "react"
 
 const { Text } = Typography
 
-interface Props {
+interface SuccessMessageProps {
     isActive?: boolean
 }
 
-const SuccessMessage = ({ isActive }: Props): JSX.Element => {
+const SuccessMessage = ({ isActive }: SuccessMessageProps): JSX.Element => {
     return (
         <div 
             className={cn(

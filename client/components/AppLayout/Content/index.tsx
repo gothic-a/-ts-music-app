@@ -2,14 +2,14 @@ import React from "react"
 import { Layout } from "antd"
 import cn from 'classnames'
 
-interface Props {
+interface ContentProps {
     collapsed: boolean,
     children: JSX.Element
 }
 
 const { Content: LayoutContent } = Layout
 
-const Content = ({ collapsed, children }: Props): JSX.Element => {
+const Content = ({ collapsed, children }: ContentProps): JSX.Element => {
     return (
         <LayoutContent 
             className={cn(

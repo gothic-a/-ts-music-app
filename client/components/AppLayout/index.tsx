@@ -10,13 +10,13 @@ import type { MenuInfo } from 'rc-menu/lib/interface'
 import { Routes } from './routes'
 import Player from '../Player'
 
-interface Props {
+interface AppLayoutProps {
     children: JSX.Element
 }
 
 export type HandleCollapse = () => void
 
-const AppLayout = ({ children }: Props): JSX.Element => {
+const AppLayout = ({ children }: AppLayoutProps): JSX.Element => {
     const router = useRouter()
     const [layoutLoading, setLayoutLoading] = useState<boolean>(false)
     const [collapsed, setCollapsed] = useState<boolean>(false)

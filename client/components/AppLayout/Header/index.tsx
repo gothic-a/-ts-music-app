@@ -6,14 +6,14 @@ import {
 } from '@ant-design/icons'
 import type { HandleCollapse } from '../'
 
-interface Props {
+interface HeaderProps {
     collapsed: boolean,
     handleCollapse: HandleCollapse
 }
 
 const { Header: LayoutHeader } = Layout
 
-const Header = ({ collapsed, handleCollapse }: Props): JSX.Element => {
+const Header = ({ collapsed, handleCollapse }: HeaderProps): JSX.Element => {
     return (
         <LayoutHeader className="h-14 sm:h-16 w-screen fixed z-[100] pl-8">
             {

@@ -5,7 +5,7 @@ import React from 'react'
 
 const { Text } = Typography
 
-interface Props {
+interface TrackCardProps {
     imagePreview?: string,
     trackPath?: string,
     name?: string,
@@ -15,7 +15,15 @@ interface Props {
     className?: string
 }
 
-const TrackCard = ({ imagePreview, trackPath, name, artist, trackSize, trackDuration, className }: Props): JSX.Element => {
+const TrackCard = ({ 
+    imagePreview, 
+    trackPath, 
+    name, 
+    artist, 
+    trackSize, 
+    trackDuration, 
+    className 
+}: TrackCardProps): JSX.Element => {
     const convertedDuration = trackDuration && convertSecToMin(trackDuration, { label: true })
     
     return (

@@ -8,7 +8,7 @@ import type { FileWithAdditionalData, SetFile } from "../../../types/upload"
 
 const { Text } = Typography
 
-interface Props {
+interface UploadFileDropzoneProps {
     acceptFormat: string,
     setFile: SetFile<string, any>,
     fieldName: string,
@@ -16,7 +16,13 @@ interface Props {
     withPreview?: boolean
 }
 
-const UploadFileDropzone = ({ acceptFormat, setFile, fieldName, withPreview, error }: Props): JSX.Element => {
+const UploadFileDropzone = ({ 
+    acceptFormat, 
+    setFile, 
+    fieldName, 
+    withPreview, 
+    error 
+}: UploadFileDropzoneProps): JSX.Element => {
     const onDrop = useCallback(async (acceptedFile: File[], rejectedFiles: FileRejection[]): Promise<void> => {
         const originalFile = acceptedFile[0]
 

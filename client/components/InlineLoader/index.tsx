@@ -1,7 +1,7 @@
 import cn from 'classnames'
 import { SyntheticEvent, useEffect, useState } from 'react'
 
-interface Props {
+interface InlineLoaderProps {
     isActive: boolean
 }
 
@@ -11,7 +11,7 @@ enum LoaderState {
     hide
 }
 
-const InlineLoader = ({ isActive }: Props): JSX.Element => {
+const InlineLoader = ({ isActive }: InlineLoaderProps): JSX.Element => {
     const [loaderState, setLoaderState] = useState<LoaderState>(LoaderState.hide)
 
     const handleTransitionEnd = (e: SyntheticEvent): void => {

@@ -6,18 +6,33 @@ import React from "react"
 
 const { Text } = Typography
 
-interface Props { 
+interface TrackTimeLineProps { 
     artist: string,
     name: string,
-    disabled: boolean,
+    disabled?: boolean,
+    onChange?: Function,
     duration: number,
     value: number,
     convertedDuration: string,
     onAfterChange: (value: number) => void,
 }
 
-const TrackTimeLine = ({ artist, name, duration, disabled, value, convertedDuration, onAfterChange }: Props) => {
+const TrackTimeLine = ({ 
+    artist, 
+    name, 
+    duration, 
+    disabled, 
+    value, 
+    convertedDuration, 
+    onAfterChange, 
+    onChange 
+}: TrackTimeLineProps) => {
     const [current, setCurrent] = useState(0)
+
+    const handleChange = (value: number): void => {
+        onChange()
+        setCurrent(value)
+    }
 
     useEffect(() => {
         setCurrent(value)
@@ -36,8 +51,8 @@ const TrackTimeLine = ({ artist, name, duration, disabled, value, convertedDurat
                     disabled={disabled}
                     max={duration} 
                     value={current}
-                    onChange={setCurrent}
-                    onAfterChange={(value) => onAfterChange(value)}
+                    onChange={handleChange}
+                    onAfterChange={onAfterChange}
                     tooltip={{formatter: convertSecToMin}}
                 />
                 <div className="flex justify-between font-semibold mt-1">

@@ -1,14 +1,15 @@
 import { Typography } from "antd"
 import StyledSlider from "../../UI/StyledSlider"
+import React from "react"
 
 const { Text } = Typography
 
-interface Props {
+interface VolumeTimeLineProps {
     value: number,
     onChange: (value: number) => void,
 }
 
-const VolumeTimeLine = ({ value, onChange }: Props) => {
+const VolumeTimeLine = ({ value, onChange }: VolumeTimeLineProps) => {
     return (
         <div className="flex flex-col justify-around w-40 h-full mx-6">
             <Text className="text-lg">Volume</Text>
@@ -31,4 +32,4 @@ const VolumeTimeLine = ({ value, onChange }: Props) => {
     )
 }
 
-export default VolumeTimeLine
+export default React.memo(VolumeTimeLine)

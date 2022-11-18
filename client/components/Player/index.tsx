@@ -1,60 +1,57 @@
-import React, { useState, useCallback } from "react"
-import { ExtendedTrack } from "../../types/track"
-import convertSecToMin from "../../utils/convertSecToMin"
-import { CaretRightOutlined, PauseOutlined } from "@ant-design/icons"
-import Image from 'next/image'
+import React, { useCallback} from "react"
 import TrackTimeLine from "./TrackTimeLine"
 import VolumeTimeLine from "./VolumeTimeLine"
+import TrackImage from "./TrackImage"
+import TrackPlayButton from "./TrackPlayButton"
+import { useAppSelector } from "../../hooks"
+import useHandleAudio from "../../hooks/useHandleAudio"
 
-const track: ExtendedTrack = {
-    _id: '1',
-    name: 'Slim shady',
-    artist: 'Eminem',
-    listens: 1,
-    image: 'http://localhost:5001/image/R-8607118-1465145735-5759.jpg-fff003b4-52db-4c0f-9446-93673517c048.jpg',
-    audio: 'http://localhost:5001/audio/%D0%93%D1%80%D0%B0%D0%B6%D0%B4%D0%B0%D0%BD%D1%81%D0%BA%D0%B0%D1%8F%20%D0%9E%D0%B1%D0%BE%D1%80%D0%BE%D0%BD%D0%B0%20-%20%D0%A1%D0%BB%D0%B5%D0%B4%D1%8B%20%D0%BD%D0%B0%20%D1%81%D0%BD%D0%B5%D0%B3%D1%83%20(mp3store.cc).mp3-eaed0b5f-c891-4e38-873e-b849b15a0bf3.mp3',
-    comments: [],
-    duration: 145,
-    convertedDuration: convertSecToMin(145)
-}
 
 const Player = (): JSX.Element => {
-    const [playing, setPlaying] = useState<boolean>(false)
-    const [value, setValue] = useState<number>(0)
-    const [volume, setVolume] = useState<number>(50)
+    const { playing, current, volume, track } = useAppSelector(state => state.player)
 
-    const handleAfterChange = useCallback(setValue, [])
+    const { 
+        handlePlay,
+        handlePause,
+        handleVolumeChange,
+        handleCurrentTime,
+        handleSetDisableAudioSettingCurrent
+    } = useHandleAudio(track?.audio)
+
+
+    const handlePlayClick = useCallback((): void => {
+        if(playing) handlePause()
+        else handlePlay()
+    }, [playing])
+
+    const handleTimelineChange = useCallback((): void => handleSetDisableAudioSettingCurrent(true), [])
+    const handleTimelineAfterChange = useCallback((value): void => {
+        handleCurrentTime(value)
+        handleSetDisableAudioSettingCurrent(false)
+    }, [])
+
+    const handleChangeVolume = useCallback((value: number): void => handleVolumeChange(value / 100), []) 
 
     return (
         <div className="flex items-center w-full h-full">
-            <div className="max-h-full mr-8">
-                <Image 
-                    width={78}
-                    height={78}
-                    src={track.image}
-                />
-            </div>
-            <div className="rounded-full bg-[#1f1f1f] w-14 h-14 flex items-center justify-center">
-                {
-                    React.createElement(playing ? PauseOutlined : CaretRightOutlined, {
-                        className: 'text-3xl leading-4 text-[#177ddc]',
-                        onClick: () => setPlaying(state => !state)
-                    })
-                }
-            </div>
+            <TrackImage image={track.image}/>
+            <TrackPlayButton 
+                playing={playing}
+                onPlayClick={handlePlayClick}
+            />
             <div className="flex grow h-full py-1 ml-8 justify-between">
                 <TrackTimeLine 
                     name={track.name}
                     artist={track.artist}
                     duration={track.duration}
                     convertedDuration={track.convertedDuration}
-                    value={value}
-                    onAfterChange={handleAfterChange}
-                    disabled={!playing}
+                    value={current}
+                    onAfterChange={handleTimelineAfterChange}
+                    onChange={handleTimelineChange}
                 />
                 <VolumeTimeLine 
                     value={volume}
-                    onChange={setVolume}
+                    onChange={handleChangeVolume}
                 />
             </div>
         </div>

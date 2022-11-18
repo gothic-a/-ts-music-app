@@ -2,14 +2,14 @@ import React from "react"
 import { Layout } from "antd"
 import cn from 'classnames'
 
-interface Props {
+interface FooterProps {
     collapsed: boolean,
     children: JSX.Element
 }
 
 const { Footer: LayoutFooter } = Layout
 
-const Footer = ({ collapsed, children }: Props): JSX.Element => {
+const Footer = ({ collapsed, children }: FooterProps): JSX.Element => {
     return (
         <LayoutFooter 
             className={cn(

@@ -15,7 +15,7 @@ const tracks: Track[] = [
         duration: 145,
     },
     {
-        _id: '1',
+        _id: '2',
         name: 'Slim shady',
         artist: 'Eminem',
         listens: 1,
@@ -25,7 +25,7 @@ const tracks: Track[] = [
         duration: 145,
     },
     {
-        _id: '1',
+        _id: '3',
         name: 'Slim shady',
         artist: 'Eminem',
         listens: 1,
