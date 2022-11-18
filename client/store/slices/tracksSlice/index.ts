@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk, AnyAction } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
-import { Track, TracksSliceInitialState, GetTracksThunkProps } from "../../../types/track";
+import { Track, TracksSliceInitialState, GetTracksThunkProps, AddListenThunkProps } from "../../../types/track";
 import { parseError, ErrorType } from "../../../utils/parseError";
-import { getTracks } from "../../../api";
-import { AppState, AppThunk } from "../../../types/store";
+import { addListen, getTracks } from "../../../api";
+import { AppState } from "../../../types/store";
 
 const initialState: TracksSliceInitialState = {
     data: null,
@@ -13,14 +13,29 @@ const initialState: TracksSliceInitialState = {
     loading: false
 }
 
-export const getTracksThunk = createAsyncThunk<Track[], GetTracksThunkProps, { state: AppState, rejectValue: ErrorType }>(
+export const getTracksThunk = createAsyncThunk<{data: Track[], page: number}, GetTracksThunkProps, { state: AppState, rejectValue: ErrorType }>(
     'tracks/getTracks',
-    async ({ page }, { rejectWithValue, getState }) => {
+    async ({ page, query }, { rejectWithValue, getState }) => {
         try {
-            const { tracks: { limit } } = getState()
+            const { tracks: { limit, page: pageFromStore } } = getState()
 
-            const { data } = await getTracks({ page, limit })
-            return data
+            const actualPage = page ?? pageFromStore
+
+            const { data } = await getTracks({ page: actualPage, limit, query })
+            return { data, page }
+        } catch(e) {
+            const error = parseError(e)
+            return rejectWithValue(error) 
+        }
+    }
+)
+
+export const addListenThunk = createAsyncThunk<string, AddListenThunkProps, { rejectValue: ErrorType }>(
+    'tracks/addListen',
+    async ({ _id }, { rejectWithValue }) => {
+        try {
+            await addListen(_id)
+            return _id
         } catch(e) {
             const error = parseError(e)
             return rejectWithValue(error) 
@@ -37,11 +52,24 @@ const trackSlice = createSlice({
         builder.addCase(getTracksThunk.pending, (state) => void(state.loading = true))
         builder.addCase(getTracksThunk.fulfilled, (state, action) => {
             state.loading = false
-            state.data = action.payload
+            const { data, page } = action.payload
+            state.data = data
+            state.page = page
         })
         builder.addCase(getTracksThunk.rejected, (state, action) => {
             state.loading = false
             state.error = action.payload 
+        })
+
+        builder.addCase(addListenThunk.fulfilled, (state, action) => {
+            const { payload } = action
+
+            const tracks = state.data
+            const listenTrack = tracks.find(t => t._id === payload)
+
+            ++listenTrack.listens 
+
+            state.data = tracks
         })
 
         builder.addCase(HYDRATE, (state, action: AnyAction) => {

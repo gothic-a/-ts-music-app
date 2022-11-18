@@ -30,6 +30,11 @@ export interface TracksSliceInitialState {
 } 
 
 export interface GetTracksThunkProps {
-    page: number
+    page: number,
+    query?: string
+}
+
+export interface AddListenThunkProps {
+    _id: string
 }
 

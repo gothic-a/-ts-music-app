@@ -19,3 +19,7 @@ export const getTracks = ({ page, limit, query }: GetTracksProps): AxiosPromise<
     return api.get(`/tracks?page=${page}&limit=${limit}${query ? `&query=${query}` : ''}`)
 }
 
+export const addListen = (_id: string): AxiosPromise<void> => {
+    return api.put(`/tracks/listen/${_id}`)
+}
+

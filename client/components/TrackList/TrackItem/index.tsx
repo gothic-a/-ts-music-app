@@ -8,6 +8,7 @@ import useHandleAudio from "../../../hooks/useHandleAudio"
 import { setTrack } from "../../../store/slices/palyerSlice"
 import formatStatic from "../../../utils/formatStatic"
 import cn from 'classnames'
+import { addListenThunk } from "../../../store/slices/tracksSlice"
 
 const { Text } = Typography
 
@@ -31,6 +32,7 @@ const TrackItem = (track: Track): JSX.Element => {
             else handlePlay() 
         } else {
             dispatch(setTrack(track))
+            dispatch(addListenThunk({ _id }))
         }
     }
 
