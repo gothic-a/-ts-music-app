@@ -5,6 +5,7 @@ import TrackImage from "./TrackImage"
 import TrackPlayButton from "./TrackPlayButton"
 import { useAppSelector } from "../../hooks"
 import useHandleAudio from "../../hooks/useHandleAudio"
+import formatStatic from "../../utils/formatStatic"
 
 
 const Player = (): JSX.Element => {
@@ -16,8 +17,7 @@ const Player = (): JSX.Element => {
         handleVolumeChange,
         handleCurrentTime,
         handleSetDisableAudioSettingCurrent
-    } = useHandleAudio(track?.audio)
-
+    } = useHandleAudio(formatStatic(track?.audio))
 
     const handlePlayClick = useCallback((): void => {
         if(playing) handlePause()
@@ -34,26 +34,32 @@ const Player = (): JSX.Element => {
 
     return (
         <div className="flex items-center w-full h-full">
-            <TrackImage image={track.image}/>
-            <TrackPlayButton 
-                playing={playing}
-                onPlayClick={handlePlayClick}
-            />
-            <div className="flex grow h-full py-1 ml-8 justify-between">
-                <TrackTimeLine 
-                    name={track.name}
-                    artist={track.artist}
-                    duration={track.duration}
-                    convertedDuration={track.convertedDuration}
-                    value={current}
-                    onAfterChange={handleTimelineAfterChange}
-                    onChange={handleTimelineChange}
-                />
-                <VolumeTimeLine 
-                    value={volume}
-                    onChange={handleChangeVolume}
-                />
-            </div>
+            {
+                track && (
+                    <>
+                        <TrackImage image={formatStatic(track.image)}/>
+                        <TrackPlayButton 
+                            playing={playing}
+                            onPlayClick={handlePlayClick}
+                        />
+                        <div className="flex grow h-full py-1 ml-8 justify-between">
+                            <TrackTimeLine 
+                                name={track.name}
+                                artist={track.artist}
+                                duration={track.duration}
+                                convertedDuration={track.convertedDuration}
+                                value={current}
+                                onAfterChange={handleTimelineAfterChange}
+                                onChange={handleTimelineChange}
+                            />
+                            <VolumeTimeLine 
+                                value={volume}
+                                onChange={handleChangeVolume}
+                            />
+                        </div>
+                    </>
+                )
+            }
         </div>
     )
 }

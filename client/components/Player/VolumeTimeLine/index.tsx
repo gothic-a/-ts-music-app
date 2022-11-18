@@ -1,6 +1,7 @@
 import { Typography } from "antd"
 import StyledSlider from "../../UI/StyledSlider"
 import React from "react"
+import { SoundOutlined } from "@ant-design/icons"
 
 const { Text } = Typography
 
@@ -11,8 +12,8 @@ interface VolumeTimeLineProps {
 
 const VolumeTimeLine = ({ value, onChange }: VolumeTimeLineProps) => {
     return (
-        <div className="flex flex-col justify-around w-40 h-full mx-6">
-            <Text className="text-lg">Volume</Text>
+        <div className="flex flex-col justify-around items-start w-40 h-full mx-6">
+            <SoundOutlined className="text-3xl"/>
             <div className="flex w-full items-center">
                 <StyledSlider 
                     value={value}
@@ -22,7 +23,7 @@ const VolumeTimeLine = ({ value, onChange }: VolumeTimeLineProps) => {
                     step={10}
                     tooltip={{ formatter: null }}
                 />
-                <Text className="font-semibold ml-6">
+                <Text className="font-semibold text-base ml-6">
                     { 
                         value 
                     }

@@ -42,14 +42,14 @@ const TrackCard = ({
                     )
                 }
             </div>
-            <div className="flex flex-col items-start text-base leading-5">
+            <div className="flex flex-col items-start text-base leading-5 w-full">
                 {
                     trackPath && (
                         <>
                             <div className='flex w-full justify-between items-center'>
-                                <Text className="w-4/5">{trackPath}</Text>
-                                <div className="flex flex-col w-1/5 text-xs opacity-60 bg-[#141414] py-1 px-2 rounded-lg">
-                                    <Text className="mb-1">{ trackSize } MB</Text>
+                                <Text className="w-3/4">{trackPath}</Text>
+                                <div className="flex flex-col w-1/4 items-center text-xs opacity-60 ml-2 bg-[#141414] py-1 px-2 rounded-lg">
+                                    <Text className="mb-1 whitespace-nowrap">{ trackSize }MB</Text>
                                     <Text>{ convertedDuration }</Text>
                                 </div>
                             </div>

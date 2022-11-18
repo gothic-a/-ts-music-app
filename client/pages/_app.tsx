@@ -5,6 +5,7 @@ import { Provider } from 'react-redux'
 import { wrapper } from '../store';
 import 'antd/dist/antd.dark.css';
 import '../styles/global.css'
+import { AppState } from '../types/store';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
     getLayout?: (page: ReactElement) => ReactNode

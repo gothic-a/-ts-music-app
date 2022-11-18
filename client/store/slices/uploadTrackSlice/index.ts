@@ -20,7 +20,6 @@ export const uploadTrackThunk = createAsyncThunk<Track, FormData, { rejectValue:
     'upload/uploadTrack',
     async (formData: FormData, { rejectWithValue, dispatch }) => {
         const setProgress: SetProgress = (progress) => {
-            console.log(progress)
             dispatch(setUploadProgress(progress))
         }
         

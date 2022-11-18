@@ -1,8 +1,8 @@
 import { PayloadAction } from "@reduxjs/toolkit"
-import { ExtendedTrack } from "./track"
+import { Track } from "./track"
 
 export interface PlayerSliceInitialState {
-    track: ExtendedTrack
+    track: Track
     playing: boolean
     current: number
     volume: number

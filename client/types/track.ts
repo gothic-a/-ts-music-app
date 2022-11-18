@@ -1,3 +1,5 @@
+import { ErrorType } from "../utils/parseError"
+
 export interface Comment {
     _id: string,
     username: string,
@@ -16,8 +18,18 @@ export interface Track {
     audio: string,
     comments?: Comment[],
     duration: 145,
-}
-
-export interface ExtendedTrack extends Track {
     convertedDuration: string
 }
+
+export interface TracksSliceInitialState {
+    data: Track[] | null,
+    limit: number,
+    page: number | null,
+    error: ErrorType | null,
+    loading: boolean
+} 
+
+export interface GetTracksThunkProps {
+    page: number
+}
+

@@ -1,24 +1,38 @@
-import React, { useState, useDeferredValue } from "react"
+import React from "react"
 import type { Track } from "../../../types/track"
-import { CaretRightOutlined, PauseOutlined, LoadingOutlined, EyeOutlined } from "@ant-design/icons"
-import { Slider, Typography } from "antd"
+import { CaretRightOutlined, EyeOutlined, SoundOutlined } from "@ant-design/icons"
+import { Typography } from "antd"
 import Image from 'next/image'
-
-const current = 123
+import { useAppDispatch, useAppSelector } from "../../../hooks"
+import useHandleAudio from "../../../hooks/useHandleAudio"
+import { setTrack } from "../../../store/slices/palyerSlice"
+import formatStatic from "../../../utils/formatStatic"
+import cn from 'classnames'
 
 const { Text } = Typography
 
-const TrackItem = ({ 
-    _id, 
-    name, 
-    artist, 
-    listens, 
-    image, 
-    audio, 
-    comments,
-    duration
-}: Track): JSX.Element => {
-    const [playing, setPlaying] = useState<boolean>(false)
+const TrackItem = (track: Track): JSX.Element => {
+    const { name, _id, artist, listens, image } = track
+    const { track: activeTrack, playing } = useAppSelector(state => state.player)
+
+    const dispatch = useAppDispatch()
+
+    const { 
+        handlePause,
+        handlePlay
+    } = useHandleAudio()
+
+    const isThisActiveTrack = activeTrack?._id === _id
+    const isThisTrackPlaying = playing && isThisActiveTrack
+
+    const handleSetPlaying = () => {
+        if(isThisActiveTrack) {
+            if(playing) handlePause()
+            else handlePlay() 
+        } else {
+            dispatch(setTrack(track))
+        }
+    }
 
     return (
         <div className="bg-[#1f1f1f] py-3 pl-24 pr-6 rounded-xl flex justify-between relative">
@@ -26,16 +40,20 @@ const TrackItem = ({
                 <Image 
                     width="72"
                     height="72"
-                    src={image}
+                    src={formatStatic(image)}
                     className="rounded-l-xl"
+                    objectFit="contain"
                 />
             </div>
             <div className="flex">
                 <div className="rounded-full bg-[#141414] w-12 h-12 flex items-center justify-center">
                     {
-                        React.createElement(playing ? LoadingOutlined : CaretRightOutlined, {
-                            className: 'text-2xl leading-4 text-[#177ddc]',
-                            onClick: () => setPlaying(state => !state)
+                        React.createElement(isThisTrackPlaying ? SoundOutlined : CaretRightOutlined, {
+                            className: cn(
+                                'text-2xl leading-4 text-[#177ddc]',
+                                isThisTrackPlaying && 'animate-pulse'
+                            ),
+                            onClick: handleSetPlaying
                         })
                     }
                 </div>

@@ -2,12 +2,12 @@ import { FormEvent } from "react"
 import { FormikErrors } from "formik"
 import { FormSteps } from "../pages/upload-track/config"
 import { ErrorType } from "../utils/parseError"
-import { ExtendedTrack } from "./track"
+import { Track } from "./track"
 
 export type Status = 'error' | 'process' | 'finish' | 'wait'
 
 export interface UploadTrackSliceState {
-    data: ExtendedTrack | null,
+    data: Track | null,
     loading: boolean,
     error: ErrorType | null,
     success: boolean,
@@ -39,8 +39,8 @@ export interface UploadFormInitialValues {
     image: FileWithAdditionalData,
     track: FileWithAdditionalData,
     description: {
-        artist: string,
-        name: string,
+        artist: string | null,
+        name: string | null,
     }
 }
 
@@ -48,8 +48,8 @@ export interface UploadFormErrors {
     errors?: {
         image?: {
             additionalData?: {
-                mbsize?: string,
-                preview?: string
+                mbsize?: string | null,
+                preview?: string | null
             }
         },
         track?: {

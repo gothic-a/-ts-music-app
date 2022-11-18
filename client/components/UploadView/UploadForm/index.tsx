@@ -15,6 +15,7 @@ import { validationSchema } from './validationSchema'
 
 import { FormikProps, FormikValues, useFormikContext } from 'formik'
 import type { UploadFormInitialValues, UploadFormErrors, HandleSubmit, HandleStepStatus, HandleSetFile, SetUploadFormFieldValue } from '../../../types/upload'
+import convertSecToMin from '../../../utils/convertSecToMin'
 
 const { Title } = Typography
 
@@ -34,11 +35,7 @@ const initialValues: UploadFormInitialValues = {
     },
     track: {
         file: null,
-        additionalData: {
-            mbsize: null,
-            preview: null,
-            duration: null
-        }
+        additionalData: null,
     },
     description: {
         artist: null,
@@ -53,7 +50,7 @@ interface IsValidProps {
 }
 
 const IsFieldValid = ({ onValid, onError, field }: IsValidProps): null => {
-    const { touched, errors } = useFormikContext<UploadFormInitialValues>()
+    const { touched, errors, values } = useFormikContext<UploadFormInitialValues>()
 
     useEffect(() => {
         if(!errors[field] && touched[field]) onValid && onValid(field)
@@ -98,7 +95,8 @@ const UploadForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStepSu
             name: values.description.name,
             image: values.image.file,
             audio: values.track.file,
-            duration: values.track.additionalData.duration
+            duration: values.track.additionalData.duration,
+            convertedDuration: convertSecToMin(values.track.additionalData.duration)
         }
 
         const formData = new FormData()
@@ -152,7 +150,7 @@ const UploadForm = ({ step, handleChangeStep, handleSetStepFail, handleSetStepSu
                                         acceptFormat='audio/*'
                                         setFile={handleSetFile(setFieldValue as SetUploadFormFieldValue)}
                                         fieldName="track"
-                                        error={errors?.track?.additionalData?.mbsize || errors?.track?.additionalData?.duration || null}
+                                        error={(errors?.track?.additionalData?.mbsize || errors?.track?.additionalData?.duration) ?? null}
                                     />
                                 )
                             }

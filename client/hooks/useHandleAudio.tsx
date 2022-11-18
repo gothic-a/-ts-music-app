@@ -12,7 +12,7 @@ export interface UseHandleAudioReturnedType {
 
 let audio: HTMLAudioElement
 
-const useHandleAudio = (audioSrc: string): UseHandleAudioReturnedType => {
+const useHandleAudio = (audioSrc?: string): UseHandleAudioReturnedType => {
     const [disableAudioSettingCurrent, setDisableAudioSettingCurrent] = useState<boolean>(false)
 
     const dispatch = useAppDispatch()
@@ -34,6 +34,7 @@ const useHandleAudio = (audioSrc: string): UseHandleAudioReturnedType => {
             audio.onpause = () => dispatch(setPlaying(false))
         } else if(audioSrc) {
             audio.src = audioSrc
+            audio.play()
         }
     }, [audioSrc])
 
