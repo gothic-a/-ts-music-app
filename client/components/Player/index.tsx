@@ -58,4 +58,4 @@ const Player = (): JSX.Element => {
     )
 }
 
-export default Player
+export default React.memo(Player)

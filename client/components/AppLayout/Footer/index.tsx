@@ -24,4 +24,4 @@ const Footer = ({ collapsed, children }: FooterProps): JSX.Element => {
     )
 }
 
-export default Footer
+export default React.memo(Footer)

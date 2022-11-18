@@ -4,11 +4,10 @@ import {
     MenuUnfoldOutlined,
     MenuFoldOutlined
 } from '@ant-design/icons'
-import type { HandleCollapse } from '../'
 
 interface HeaderProps {
     collapsed: boolean,
-    handleCollapse: HandleCollapse
+    handleCollapse: () => void
 }
 
 const { Header: LayoutHeader } = Layout
@@ -26,4 +25,4 @@ const Header = ({ collapsed, handleCollapse }: HeaderProps): JSX.Element => {
     )
 }
 
-export default Header
+export default React.memo(Header)

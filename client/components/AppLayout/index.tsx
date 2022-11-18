@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Layout } from 'antd'
 import Router, { useRouter } from 'next/router'
 import InlineLoader from '../InlineLoader'
@@ -9,27 +9,27 @@ import Content from './Content'
 import type { MenuInfo } from 'rc-menu/lib/interface'
 import { Routes } from './routes'
 import Player from '../Player'
+import usePrefetchPages from '../../hooks/usePrefetchPages'
 
 interface AppLayoutProps {
     children: JSX.Element
 }
-
-export type HandleCollapse = () => void
 
 const AppLayout = ({ children }: AppLayoutProps): JSX.Element => {
     const router = useRouter()
     const [layoutLoading, setLayoutLoading] = useState<boolean>(false)
     const [collapsed, setCollapsed] = useState<boolean>(false)
 
+    usePrefetchPages()
+
     const startLoading = (): void => setLayoutLoading(true);
     const stopLoading = (): void => setLayoutLoading(false);
 
-    const handleCollapse: HandleCollapse = () => setCollapsed(state => !state)
-    const handleMenuClick = (props: MenuInfo): void => {
+    const handleCollapse = useCallback(() => setCollapsed(state => !state), [])
+    const handleMenuClick = useCallback((props: MenuInfo): void => {
         if(router.pathname === props.key) return 
-
         router.push(props.key)
-    } 
+    }, [router])
 
     useEffect(() => {
         Router.events.on('routeChangeStart', startLoading); 

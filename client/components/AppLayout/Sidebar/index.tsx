@@ -1,3 +1,4 @@
+import React from 'react'
 import { Menu, Layout } from 'antd'
 import { Routes } from '../routes'
 import type { MenuClickEventHandler } from 'rc-menu/lib/interface'
@@ -40,4 +41,4 @@ const Sidebar = ({ selectedKey, collapsed, onMenuClick }: SidebarProps): JSX.Ele
     )
 }
 
-export default Sidebar
+export default React.memo(Sidebar)

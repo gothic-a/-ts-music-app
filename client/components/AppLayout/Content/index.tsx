@@ -24,4 +24,4 @@ const Content = ({ collapsed, children }: ContentProps): JSX.Element => {
     )
 }
 
-export default Content
+export default React.memo(Content)
