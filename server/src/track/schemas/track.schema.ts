@@ -18,6 +18,9 @@ export class Track {
     @Prop()
     duration: number
 
+    @Prop()
+    convertedDuration: string
+
     @Prop({ default: 0 })
     listens: number
 

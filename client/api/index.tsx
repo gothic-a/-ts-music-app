@@ -3,7 +3,7 @@ import type { AxiosPromise } from "axios";
 import type { Track } from "../types/track";
 import type { OnUploadProgress, SetProgress, GetTracksProps } from "../types/api";
 
-const apiDomain = 'http://localhost:5001/api'
+const apiDomain = process.env.NEXT_PUBLIC_API_DOMAIN
 
 const api = axios.create({
     baseURL: apiDomain

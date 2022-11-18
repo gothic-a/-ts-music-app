@@ -1,5 +1,6 @@
 const formatStatic = (path: string) => {
-    return `http://localhost:5001/${path}`
+    const serverDomain = process.env.NEXT_PUBLIC_SERVER_DOMAIN
+    return `${serverDomain}/${path}`
 }
 
 export default formatStatic

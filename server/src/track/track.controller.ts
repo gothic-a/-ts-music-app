@@ -24,8 +24,8 @@ export class TrackController {
     }
 
     @Get()
-    getAll(@Query('page') page: number, @Query('limit') limit: number): Promise<Track[]> {
-        return this.trackService.getAll(page, limit)
+    getAll(@Query('page') page: number, @Query('limit') limit: number, @Query('query') query: string): Promise<Track[]> {
+        return this.trackService.getAll(page, limit, query)
     }
 
     @Get('/search')

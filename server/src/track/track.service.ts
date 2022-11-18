@@ -46,15 +46,25 @@ export class TrackService {
         const audioPath = this.fileService.writeFile(FileType.AUDIO, files.audio[0])
         const imagePath = this.fileService.writeFile(FileType.IMAGE, files.image[0])
 
-        const track = await this.trackModel.create({ ...dto, audio: audioPath, image: imagePath })
+        const track = await this.trackModel.create({ ...dto, audio: audioPath, image: imagePath, listens: 1 })
         
         return track
     }
 
-    async getAll(page: number = 1, limit: number = 6): Promise<Track[]> {
+    async getAll(page: number = 1, limit: number = 6, query: string): Promise<Track[]> {
         const offset = (page - 1) * limit 
 
-        const tracks = await this.trackModel.find({}).skip(offset).limit(limit)
+        const searchRegExp = { $regex: new RegExp(query, 'i') }
+        const searchQuery = {
+            $or: [
+                {name: searchRegExp},
+                {artist: searchRegExp}
+            ]
+        }
+        
+        const search = query ? searchQuery : {}
+
+        const tracks = await this.trackModel.find(search).skip(offset).limit(limit)
         return tracks
     }
 
